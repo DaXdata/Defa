@@ -12,7 +12,6 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(IO_Rele, GPIO.OUT)
 GPIO.setup(IO_LED, GPIO.OUT)
 GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.add_event_detect(IO_Bryter, GPIO.RISING)
 mode = 0
 
 ####################################################
@@ -22,9 +21,16 @@ def Rele(Sta):
 	print("Rele status: ", Sta)
 
 def LED(mode):
-	GPIO.output(IO_LED, Sta)
-	print("LED status: ", Sta)
-	
+	if mode == 0:
+		GPIO.output(IO_LED, 1)
+		print("LED status: auto")
+	if mode == 1:
+		GPIO.output(IO_LED, 0)
+		print("LED status: off")
+	if mode == 2:		
+		GPIO.output(IO_LED, 1)
+		print("LED status: on")
+
 def klokke_range(start=5, stopp=8):
 	threading.Timer(10, klokke_range).start()
 		#current = time.strftime("%H:%M")
@@ -45,18 +51,13 @@ def on():
 options = {0 : auto, 1 : off, 2 : on}
 
 
-def Bryter():
-	try:
-		threading.Timer(0.3, Bryter).start()
-			if GPIO.event_detected(IO_Bryter):
-				mode = mode + 1
-				if mode = 3
-					mode = 0
+def Bryter(IO_Bryter):
+	mode = mode + 1
+	if mode == 3:
+		mode = 0
+	print(mode)
 
-		
-	except KeyboadInterrupt:
-		pass
-		GPIO.cleanup()
+GPIO.add_event_detect(IO_Bryter, GPIO.RISING, callback=Bryter, bouncetime=200)
 
 #####################################################
 ######################  Main  #######################
@@ -64,9 +65,9 @@ def Bryter():
 if __name__ == '__main__':
 
 	try:
-		Bryter()
-		#options[0]()
-		Rele(0)
+		mode = 0
+		while 1:	
+			options[mode]()
 
 	except KeyboardInterrupt:
 		pass	
