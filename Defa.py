@@ -12,33 +12,51 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(IO_Rele, GPIO.OUT)
 GPIO.setup(IO_LED, GPIO.OUT)
 GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.add_event_detect(IO_Bryter, GPIO.RISING)
+mode = 0
 
 ####################################################
 
 def Rele(Sta):
 	GPIO.output(IO_Rele, Sta)
-	GPIO.output(IO_LED, Sta)
 	print("Rele status: ", Sta)
 
+def LED(mode):
+	GPIO.output(IO_LED, Sta)
+	print("LED status: ", Sta)
+	
 def klokke_range(start=5, stopp=8):
 	threading.Timer(10, klokke_range).start()
+		#current = time.strftime("%H:%M")
+		#print(current)
 
-time.fsrtime("%H:%M")
-#plukk ut verdi for tid av string
-sammenlign med en grense gitt av funksjonen.
+def auto():
+	LED(auto)
+	#klokke_range(fra, til)
+
+def off():
+	LED(off)
+	threading.Timer(10, klokke_range).stop()
+	
+def on():
+	LED(on)
+	threading.Timer(10, klokke_range).stop()
+
+options = {0 : auto, 1 : off, 2 : on}
+
 
 def Bryter():
-Toggle = True
-	threading.Timer(0.3, Bryter).start()
-		if GPIO.input(IO_Bryter) == True and Toggle == True:
-			Rele(1)
-			Toggle = False
+	try:
+		threading.Timer(0.3, Bryter).start()
+			if GPIO.event_detected(IO_Bryter):
+				mode = mode + 1
+				if mode = 3
+					mode = 0
 
-
-		if GPIO.input(IO_Bryter) == True and Toggle == False:
-			Rele(0)
-			Toggle = True
-
+		
+	except KeyboadInterrupt:
+		pass
+		GPIO.cleanup()
 
 #####################################################
 ######################  Main  #######################
@@ -46,8 +64,9 @@ Toggle = True
 if __name__ == '__main__':
 
 	try:
-		klokke_range(3,4)
 		Bryter()
+		#options[0]()
+		Rele(0)
 
 	except KeyboardInterrupt:
 		pass	
