@@ -1,36 +1,54 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 
 
-#initialize
-
+#initialize 
 import time
 import RPi.GPIO as GPIO
+import threading
 
-
-Bryter = 13
-LED = 11
-Rele = 7
+IO_Bryter = 13
+IO_LED = 11
+IO_Rele = 7
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(Rele, GPIO.OUT)
-GPIO.setup(LED, GPIO.OUT)
-GPIO.setup(Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-Toggle = False
+GPIO.setup(IO_Rele, GPIO.OUT)
+GPIO.setup(IO_LED, GPIO.OUT)
+GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-#Toggle light
+####################################################
 
-try:
-	while True:
-		if GPIO.input(Bryter) == True and Toggle == True:
-			GPIO.output(LED, 1)
+def Rele(Sta):
+	GPIO.output(IO_Rele, Sta)
+	GPIO.output(IO_LED, Sta)
+	print("Rele status: ", Sta)
+
+def klokke_range(start=5, stopp=8):
+	threading.Timer(10, klokke_range).start()
+
+time.fsrtime("%H:%M")
+#plukk ut verdi for tid av string
+sammenlign med en grense gitt av funksjonen.
+
+def Bryter():
+Toggle = True
+	threading.Timer(0.3, Bryter).start()
+		if GPIO.input(IO_Bryter) == True and Toggle == True:
+			Rele(1)
 			Toggle = False
-			print("Led On")			
-			time.sleep(0.3)	
 
-		if GPIO.input(Bryter) == True and Toggle == False:
-			GPIO.output(LED, 0)
+
+		if GPIO.input(IO_Bryter) == True and Toggle == False:
+			Rele(0)
 			Toggle = True
-			print("Led Off")
-			time.sleep(0.3)
 
-except KeyboardInterrupt:
-	pass	
-GPIO.cleanup()	
+
+#####################################################
+######################  Main  #######################
+
+if __name__ == '__main__':
+
+	try:
+		klokke_range(3,4)
+		Bryter()
+
+	except KeyboardInterrupt:
+		pass	
+		GPIO.cleanup()	
