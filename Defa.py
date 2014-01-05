@@ -1,5 +1,23 @@
 #!/usr/bin/env python3 
 
+#################################################
+# This script is written to run a Defa warmup   #
+# reley mounted outside. it should start the	#
+# fan and motor heater at a given time. mode	#
+# can be selected from a switch or UDP data.	#
+#################################################
+#						#
+# V0.0 , JAET , First version			#
+# V1.0 , JAET , Switch and clock mode		#
+# V1.1 , JAET , Runs as Service			#
+#						#
+#################################################
+#Runs as service at startup,			#
+#Start:  sudo /etc/init.d/defa.sh start		#
+#Status:  sudo /etc/init.d/defa.sh status	#
+#Stop:  sudo /etc/init.d/defa.sh stop		#
+#################################################
+
 #initialize 
 import time
 import RPi.GPIO as GPIO
