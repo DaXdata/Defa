@@ -22,6 +22,8 @@
 import time
 import RPi.GPIO as GPIO
 import threading
+import socket #Initialisere UDP adresse og port
+
 
 IO_Bryter = 13
 IO_LED = 11
@@ -35,6 +37,13 @@ hFrom = 5
 mFrom = 0
 hTo = 7
 mTo = 60
+
+### UDP opening socket
+ip = ""
+port = 30301
+sock = socket.socket(socket.AF_INET, #Internet
+                        socket.SOCK_DGRAM) #UDP
+sock.bind((ip, port))
 
 ####################################################
 
@@ -87,7 +96,13 @@ def Bryter(IO_Bryter):
 	mode = mode + 1
 	if mode == 3:
 		mode = 0
-	print(mode)
+
+	if mode == 0:
+		print("Mode: Auto")
+	if mode == 1:
+		print("Mode: Off")
+	if mode == 2:
+		print("Mode; On")
 
 GPIO.add_event_detect(IO_Bryter, GPIO.RISING, callback=Bryter, bouncetime=200)
 
@@ -99,9 +114,16 @@ if __name__ == '__main__':
 	try:
 		mode = 0
 		flash_done = False
+		print("Defa Running")
 		while 1:	
 			options[mode]()
+			data, addr = sock.recvfrom(1024)
+			if data is not None:
+				print(data)
+				print(addr)	
+
 
 	except KeyboardInterrupt:
 		pass	
 		GPIO.cleanup()	
+		sock.close()
