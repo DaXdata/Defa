@@ -22,7 +22,7 @@
 import time
 import RPi.GPIO as GPIO
 import threading
-import socket #Initialisere UDP adresse og port
+#import socket #Initialisere UDP adresse og port
 
 
 IO_Bryter = 13
@@ -39,11 +39,11 @@ hTo = 7
 mTo = 60
 
 ### UDP opening socket
-ip = ""
-port = 30301
-sock = socket.socket(socket.AF_INET, #Internet
-                        socket.SOCK_DGRAM) #UDP
-sock.bind((ip, port))
+#ip = ""
+#port = 30301
+#sock = socket.socket(socket.AF_INET, #Internet
+#                        socket.SOCK_DGRAM) #UDP
+#sock.bind((ip, port))
 
 ####################################################
 
@@ -117,13 +117,13 @@ if __name__ == '__main__':
 		print("Defa Running")
 		while 1:	
 			options[mode]()
-			data, addr = sock.recvfrom(1024)
-			if data is not None:
-				print(data)
-				print(addr)	
+#			data, addr = sock.recvfrom(1024)
+#			if data is not None:
+#				print(data)
+#				print(addr)	
 
 
 	except KeyboardInterrupt:
 		pass	
 		GPIO.cleanup()	
-		sock.close()
+#		sock.close()
