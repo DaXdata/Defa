@@ -87,7 +87,7 @@ def off():
 def on():
 	LED(1)
 	Rele(1)
-#hei
+
 options = {0 : auto, 1 : off, 2 : on}
 
 
