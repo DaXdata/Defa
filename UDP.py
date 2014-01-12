@@ -9,10 +9,12 @@ import socket
 class UDP:
 
 
-	def __init__(self,port):
-		self.port = port
+	def __init__(self,port_recv,port_send):
+		self.port_send = port_send
+		self.port_recv = port_recv
+		self.addr = None
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.sock.bind(('',port))
+		self.sock.bind(('',self.port_recv))
 
 	def recv_udp(self):
 		self.data, self.addr = self.sock.recvfrom(100)
@@ -22,12 +24,6 @@ class UDP:
 
 	def send_udp(self,data):
 		try:
-			self.sock.sendto(data, (self.addr[0],port))
+			self.send_size = self.sock.sendto(data.encode('utf-8'), (self.addr[0], self.port_send))
 		finally:
-			return True
-
-	def change(self):
-		self.sock.close()
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.sock.bind(self.addr)
-
+			return self.send_size
