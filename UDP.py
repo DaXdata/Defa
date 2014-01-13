@@ -13,17 +13,27 @@ class UDP:
 		self.port_send = port_send
 		self.port_recv = port_recv
 		self.addr = None
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.sock.bind(('',self.port_recv))
+		try:
+			self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			self.sock.bind(('',self.port_recv))
+		except:
+			print("UDP connection failed")
 
 	def recv_udp(self):
 		self.data, self.addr = self.sock.recvfrom(100)
+		#if self.data is not None
+			
 				
 	def stop(self):
-		self.sock.close()
+		try:
+			self.sock.close()
+		except:
+			pass
 
 	def send_udp(self,data):
 		try:
 			self.send_size = self.sock.sendto(data.encode('utf-8'), (self.addr[0], self.port_send))
+		except:
+			print("Could not send data")
 		finally:
 			return self.send_size

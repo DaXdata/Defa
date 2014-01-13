@@ -18,13 +18,17 @@
 #Stop:  sudo /etc/init.d/defa.sh stop		#
 #################################################
 
-#initialize 
+#################################################
+#                 initialize                    # 
+#################################################
+
+### Imports
 import time
 import RPi.GPIO as GPIO
 import threading
-#import socket #Initialisere UDP adresse og port
+from UDP import UDP
 
-
+### Input/Output
 IO_Bryter = 13
 IO_LED = 11
 IO_Rele = 7
@@ -32,24 +36,26 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(IO_Rele, GPIO.OUT)
 GPIO.setup(IO_LED, GPIO.OUT)
 GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+### Communication
+com = UDP(30301,30302)
+
+### Variables
 mode = 0
 hFrom = 5
 mFrom = 0
 hTo = 7
 mTo = 60
 
-### UDP opening socket
-#ip = ""
-#port = 30301
-#sock = socket.socket(socket.AF_INET, #Internet
-#                        socket.SOCK_DGRAM) #UDP
-#sock.bind((ip, port))
+#################################################
+#                 Functiuons                    # 
+#################################################
 
-####################################################
-
+### Rele Output
 def Rele(Sta):
 	GPIO.output(IO_Rele, Sta)
 
+### Led Output
 def LED(mode):
 	global flash_done
 	if mode == 0 and not flash_done:
@@ -66,6 +72,7 @@ def LED(mode):
 		GPIO.output(IO_LED, GPIO.input(IO_Rele))
 		flash_done = False
 
+### Clock / Timing function
 def klokke_range(hFrom, hTo, mFrom, mTo):
 		current = time.strftime("%H:%M")
 		H = int(current[:2])
@@ -75,7 +82,8 @@ def klokke_range(hFrom, hTo, mFrom, mTo):
 		else:
 			return 0
 		time.sleep(6)
- 
+
+### Modes
 def auto():
 	LED(0)
 	Rele(klokke_range(hFrom, hTo, mFrom, mTo))
@@ -90,7 +98,7 @@ def on():
 
 options = {0 : auto, 1 : off, 2 : on}
 
-
+### Increment to next mode
 def Bryter(IO_Bryter):
 	global mode
 	mode = mode + 1
@@ -102,13 +110,16 @@ def Bryter(IO_Bryter):
 	if mode == 1:
 		print("Mode: Off")
 	if mode == 2:
-		print("Mode; On")
+		print("Mode: On")
 
+### Watching Input
 GPIO.add_event_detect(IO_Bryter, GPIO.RISING, callback=Bryter, bouncetime=200)
 
-#####################################################
-######################  Main  #######################
+#################################################
+#                 Main Loop                     # 
+#################################################
 
+### Declaration
 if __name__ == '__main__':
 
 	try:
@@ -117,13 +128,11 @@ if __name__ == '__main__':
 		print("Defa Running")
 		while 1:	
 			options[mode]()
-#			data, addr = sock.recvfrom(1024)
-#			if data is not None:
-#				print(data)
-#				print(addr)	
-
-
+			com.recv_udp()
+			if com.data is not None:
+				print(com.data)
+			time.sleep(0.1)
 	except KeyboardInterrupt:
 		pass	
 		GPIO.cleanup()	
-#		sock.close()
+		com.stop()
