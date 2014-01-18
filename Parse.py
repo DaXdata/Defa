@@ -28,27 +28,33 @@ class Parse:
 
 
 	def getTimeOn(data):
-		command = data.split(" ")
-
-		if tOn in command:
-			temp = command[command.index(tOn) + 1]
-			temp = temp.split(":")
-			hOn = temp[0]
-			mOn = temp[1]
-			print("mottat tid On: ", hOn, ":", mOn)
-			return(True, hOn, mOn)
-		else:
-			return(False, 0, 0)
+		data = data.decode()
+		try:
+			command = data.split(" ")
+			if tOn in command:
+				temp = command[command.index(tOn) + 1]
+				temp = temp.split(":")
+				hOn = temp[0]
+				mOn = temp[1]
+				print("mottat tid On: ", hOn, ":", mOn)
+				return(True, hOn, mOn)
+			else:
+				return(False, 0, 0)
+		except:
+			print("could not read telegram")
 	
 	def getTimeOff(data):
-		command = data.split(" ")
-	
-		if tOff in command:
-			temp = command[command.index(tOff) + 1]
-			temp = temp.split(":")
-			hOff = temp[0]
-			mOff = temp[1]
-			print("mottat tid Off: ", hOff, ":", mOff)
-			return(True, hOff, mOff)
-		else:
-			return(False, 0, 0)
+		data = data.decode()
+		try:
+			command = data.split(" ")
+			if tOff in command:
+				temp = command[command.index(tOff) + 1]
+				temp = temp.split(":")
+				hOff = temp[0]
+				mOff = temp[1]
+				print("mottat tid Off: ", hOff, ":", mOff)
+				return(True, hOff, mOff)
+			else:
+				return(False, 0, 0)
+		except:
+			print("could not read telegram")

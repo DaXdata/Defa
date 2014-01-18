@@ -27,6 +27,7 @@ import time
 import RPi.GPIO as GPIO
 import threading
 from UDP import UDP
+from Parse import Parse
 
 ### Input/Output
 IO_Bryter = 13
@@ -39,13 +40,14 @@ GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 ### Communication
 com = UDP(30301,30302)
+p = Parse
 
 ### Variables
 mode = 0
-hFrom = 5
-mFrom = 0
-hTo = 7
-mTo = 60
+hOn = 5
+mOn = 0
+hOff = 7
+mOff = 60
 
 #################################################
 #                 Functiuons                    # 
@@ -73,11 +75,11 @@ def LED(mode):
 		flash_done = False
 
 ### Clock / Timing function
-def klokke_range(hFrom, hTo, mFrom, mTo):
+def klokke_range(hOn, hOff, mOn, mOff):
 		current = time.strftime("%H:%M")
 		H = int(current[:2])
 		M = int(current[3:])
-		if hFrom <= H and H <= hTo and mFrom <= M and M <= mTo:
+		if hOn <= H and H <= hOff and mOn <= M and M <= mOff:
 			return 1
 		else:
 			return 0
@@ -86,7 +88,7 @@ def klokke_range(hFrom, hTo, mFrom, mTo):
 ### Modes
 def auto():
 	LED(0)
-	Rele(klokke_range(hFrom, hTo, mFrom, mTo))
+	Rele(klokke_range(hOn, hOff, mOn, mOff))
 
 def off():
 	LED(1)
@@ -131,6 +133,16 @@ if __name__ == '__main__':
 			com.recv_udp()
 			if com.data is not None:
 				print(com.data)
+				ret_tOn = p.getTimeOn(com.data)
+				print(ret_tOn)
+				if ret_tOn[0] is True:
+					hOn = int(ret_tOn[1])
+					mOn = int(ret_tOn[2])
+				ret_tOff = p.getTimeOff(com.data)
+				print(ret_tOff)
+				if ret_tOff[0] is True:
+					hOff = int(ret_tOff[1])
+					mOff = int(ret_tOff[2])
 			time.sleep(0.1)
 	except KeyboardInterrupt:
 		pass	
