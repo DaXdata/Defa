@@ -19,6 +19,7 @@
 ### Declaire
 tOn = "-On"
 tOff = "-Off"
+mode = "-M"
 
 #################################################
 #		    Create class		#
@@ -41,7 +42,7 @@ class Parse:
 			else:
 				return(False, 0, 0)
 		except:
-			print("could not read telegram")
+			print("Could not read telegram")
 	
 	def getTimeOff(data):
 		data = data.decode()
@@ -57,4 +58,15 @@ class Parse:
 			else:
 				return(False, 0, 0)
 		except:
-			print("could not read telegram")
+			print("Could not read telegram")
+
+	def getMode(data):
+		data = data.decode()
+		try:
+			command = data.split(" ")
+			if mode in command:
+				return(True, command[command.index(mode) + 1])
+			else:
+				return(False, 0)
+		except:
+			print("Could not read telegram")

@@ -100,6 +100,24 @@ def on():
 
 options = {0 : auto, 1 : off, 2 : on}
 
+### Parsing from UDP
+def get_cmd(data):
+	global mode, hOn, mOn, hOff, mOff
+	ret_tOn = p.getTimeOn(com.data)
+	print(ret_tOn)
+	if ret_tOn[0] is True:
+		hOn = int(ret_tOn[1])
+		mOn = int(ret_tOn[2])
+	ret_tOff = p.getTimeOff(com.data)
+	print(ret_tOff)
+	if ret_tOff[0] is True:
+		hOff = int(ret_tOff[1])
+		mOff = int(ret_tOff[2])
+	ret_mode = p.getMode(com.data)
+	if ret_mode[0] is True:
+		mode = int(ret_mode[1])	
+		print("Mode: =", mode)
+
 ### Increment to next mode
 def Bryter(IO_Bryter):
 	global mode
@@ -132,17 +150,7 @@ if __name__ == '__main__':
 			options[mode]()
 			com.recv_udp()
 			if com.data is not None:
-				print(com.data)
-				ret_tOn = p.getTimeOn(com.data)
-				print(ret_tOn)
-				if ret_tOn[0] is True:
-					hOn = int(ret_tOn[1])
-					mOn = int(ret_tOn[2])
-				ret_tOff = p.getTimeOff(com.data)
-				print(ret_tOff)
-				if ret_tOff[0] is True:
-					hOff = int(ret_tOff[1])
-					mOff = int(ret_tOff[2])
+				get_cmd(com.data)
 			time.sleep(0.1)
 	except KeyboardInterrupt:
 		pass	
