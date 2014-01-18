@@ -4,6 +4,8 @@
 
 #imports
 import socket 
+import fcntl
+import os
 
 #Create class
 class UDP:
@@ -16,12 +18,17 @@ class UDP:
 		try:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 			self.sock.bind(('',self.port_recv))
+			fd = self.sock.fileno()
+			fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+			fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
 		except:
 			print("UDP connection failed")
 
 	def recv_udp(self):
-		self.data, self.addr = self.sock.recvfrom(100)
-		#if self.data is not None
+		try:
+			self.data, self.addr = self.sock.recvfrom(100)
+		except:
+			pass	
 			
 				
 	def stop(self):

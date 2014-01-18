@@ -98,7 +98,7 @@ def on():
 	LED(1)
 	Rele(1)
 
-options = {0 : auto, 1 : off, 2 : on}
+options = {2 : auto, 0 : off, 1 : on}
 
 ### Parsing from UDP
 def get_cmd(data):
@@ -125,12 +125,13 @@ def Bryter(IO_Bryter):
 	if mode == 3:
 		mode = 0
 
-	if mode == 0:
-		print("Mode: Auto")
-	if mode == 1:
-		print("Mode: Off")
 	if mode == 2:
+		print("Mode: Auto")
+	if mode == 0:
+		print("Mode: Off")
+	if mode == 1:
 		print("Mode: On")
+#	options[mode]()
 
 ### Watching Input
 GPIO.add_event_detect(IO_Bryter, GPIO.RISING, callback=Bryter, bouncetime=200)
@@ -143,14 +144,16 @@ GPIO.add_event_detect(IO_Bryter, GPIO.RISING, callback=Bryter, bouncetime=200)
 if __name__ == '__main__':
 
 	try:
-		mode = 0
+		mode = 2
 		flash_done = False
 		print("Defa Running")
+		com.data = None
 		while 1:	
 			options[mode]()
 			com.recv_udp()
 			if com.data is not None:
 				get_cmd(com.data)
+				com.data = None
 			time.sleep(0.1)
 	except KeyboardInterrupt:
 		pass	
