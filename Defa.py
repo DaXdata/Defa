@@ -39,7 +39,7 @@ GPIO.setup(IO_LED, GPIO.OUT)
 GPIO.setup(IO_Bryter, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 ### Communication
-com = UDP(30301,30302)
+com = UDP(30301,30301)
 p = Parse
 
 ### Variables
@@ -103,7 +103,8 @@ options = {2 : auto, 0 : off, 1 : on}
 ### Parsing from UDP
 def get_cmd(data):
 	global mode, hOn, mOn, hOff, mOff
-#Time On
+	
+	#Time On
 	ret_tOn = p.getTimeOn(com.data)
 	print(ret_tOn)
 	if ret_tOn[0] is True:
@@ -111,17 +112,23 @@ def get_cmd(data):
 		mOn = int(ret_tOn[2])
 		text = "Time On: " + ret_tOn[1] + ":" + ret_tOn[2]
 		com.send_udp(text)
-#Time Off
+	
+	#Time Off
 	ret_tOff = p.getTimeOff(com.data)
 	print(ret_tOff)
 	if ret_tOff[0] is True:
 		hOff = int(ret_tOff[1])
 		mOff = int(ret_tOff[2])
-#Mode selected
+		text = "Time Off: " + ret_tOff[1] + ":" + ret_tOff[2]
+		com.send_udp(text)
+	
+	#Mode selected
 	ret_mode = p.getMode(com.data)
 	if ret_mode[0] is True:
 		mode = int(ret_mode[1])	
 		print("Mode: =", mode)
+		text = "Mode: " + mode
+		com.send_udp(text)
 
 ### Increment to next mode
 def Bryter(IO_Bryter):

@@ -40,6 +40,7 @@ class UDP:
 	def send_udp(self,data):
 		try:
 			self.send_size = self.sock.sendto(data.encode('utf-8'), (self.addr[0], self.port_send))
+			print("Sendt to " + str(self.addr[0]) + ":" + str(self.port_send) + ";" + data)
 		except:
 			print("Could not send data")
 		finally:
