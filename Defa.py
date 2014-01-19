@@ -103,16 +103,21 @@ options = {2 : auto, 0 : off, 1 : on}
 ### Parsing from UDP
 def get_cmd(data):
 	global mode, hOn, mOn, hOff, mOff
+#Time On
 	ret_tOn = p.getTimeOn(com.data)
 	print(ret_tOn)
 	if ret_tOn[0] is True:
 		hOn = int(ret_tOn[1])
 		mOn = int(ret_tOn[2])
+		text = "Time On: " + ret_tOn[1] + ":" + ret_tOn[2]
+		com.send_udp(text)
+#Time Off
 	ret_tOff = p.getTimeOff(com.data)
 	print(ret_tOff)
 	if ret_tOff[0] is True:
 		hOff = int(ret_tOff[1])
 		mOff = int(ret_tOff[2])
+#Mode selected
 	ret_mode = p.getMode(com.data)
 	if ret_mode[0] is True:
 		mode = int(ret_mode[1])	
